@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>Dungeon crawler</title>
+    <link rel="stylesheet" href="public/css/style.css">
+  </head>
+  <body>
+    <div class="scanlines-overlay"></div>
+    <main id="screen">
+      <div class="broken-crack">
+        <img src="./public/img/pngkey.com-cracked-png-925567.png" alt="">
+      </div>
+      <div class="data"></div>
+      <div id="ui">
+        <h1 id="select-enemy-popup">Select an enemy</h1>
+        <div class="UI-container">
+          <div id="floorNumber">
+            <h1>Floor 1</h1>
+          </div>
+        </div>
+        <div class="UI-container">
+          <div class="loot">
+            
+          </div>
+        </div>
+        <div class="UI-container bottom-left">
+          <div class="stats left">
+            <div class="stat">
+              <svg class="icon-svg-stats" version="1.0" xmlns="http://www.w3.org/2000/svg"
+                  width="32.000000pt" height="26.000000pt" viewBox="0 0 42.000000 36.000000"
+                  preserveAspectRatio="xMidYMid meet">
+
+                  <g transform="translate(0.000000,36.000000) scale(0.100000,-0.100000)"
+                    fill="#ff0000" stroke="#ffffff" stroke-width="20">
+                      <path d="M65 290 l-58 -59 98 -108 c55 -59 100 -110 102 -112 2 -4 73 70 168
+                              177 l38 43 -59 60 -59 60 -42 -45 -42 -44 -41 44 c-22 24 -42 44 -43 44 -1 0
+                              -29 -27 -62 -60z"/>
+                  </g>
+              </svg>
+              <div class="health"></div>
+            </div>
+            <div class="stat">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100px" height="100px" viewBox="0 0 114 116">
+                <g>
+                  <path fill="#7a7a7a" d="M104.5,8.5C99.5364,13.9647,94.3697,19.298,89,24.5C86.6356,21.3098,84.1356,18.3098,81.5,15.5C88.8317,12.4118,96.4983,10.0785,104.5,8.5Z"/>
+                </g>
+                <g>
+                  <path fill="#5b5b5b" d="M48.5,76.5C51.7229,71.2723,53.5562,65.6056,54,59.5C49.6644,61.169,45.1644,62.3357,40.5,63C39.6266,64.045,38.6266,64.8783,37.5,65.5C51.801,48.531,66.4677,31.8644,81.5,15.5C84.1356,18.3098,86.6356,21.3098,89,24.5C94.3697,19.298,99.5364,13.9647,104.5,8.5C105.612,8.48572,105.779,9.48572,105,11.5C103.066,18.6366,100.732,25.6366,98,32.5C81.9065,47.7682,65.4065,62.4348,48.5,76.5Z"/>
+                </g>
+                <g>
+                  <path fill="#8b8334" d="M37.5,65.5C38.6266,64.8783,39.6266,64.045,40.5,63C45.1644,62.3357,49.6644,61.169,54,59.5C53.5562,65.6056,51.7229,71.2723,48.5,76.5C46.1411,79.3945,47.1411,80.2279,51.5,79C62.5385,75.4285,73.5385,72.0952,84.5,69C81.209,73.7478,78.0423,78.5812,75,83.5C66.8841,87.1582,58.3841,89.8249,49.5,91.5C44.7654,90.962,40.0987,90.2953,35.5,89.5C35.5295,82.1962,31.8629,78.5295,24.5,78.5C23.7457,73.7275,23.079,68.8942,22.5,64C24.6657,56.169,26.8324,48.3357,29,40.5C34.1595,36.5864,39.4928,32.9197,45,29.5C42.3053,40.5924,38.972,51.5924,35,62.5C33.7721,66.8589,34.6055,67.8589,37.5,65.5Z"/>
+                </g>
+                <g>
+                  <path fill="#8c3193" d="M49.5,62.5C50.4972,62.4701,51.1639,62.9701,51.5,64C50.3132,66.7236,49.6465,69.5569,49.5,72.5C46.1881,73.4845,42.8548,74.4845,39.5,75.5C39.1667,75,38.8333,74.5,38.5,74C39.5358,71.2259,40.3691,68.3926,41,65.5C43.8705,64.3068,46.7038,63.3068,49.5,62.5Z"/>
+                </g>
+                <g>
+                  <path fill="#4d340d" d="M24.5,78.5C31.8629,78.5295,35.5295,82.1962,35.5,89.5C29.8333,94.5,24.5,99.8333,19.5,105.5C18.7948,102.772,18.1281,99.9386,17.5,97C13.9748,96.8213,10.6414,96.3213,7.5,95.5C13.5,90.1667,19.1667,84.5,24.5,78.5Z"/>
+                </g>
+                <g>
+                  <path fill="#8c8333" d="M7.5,95.5C10.6414,96.3213,13.9748,96.8213,17.5,97C18.1281,99.9386,18.7948,102.772,19.5,105.5C19.6576,108.902,19.3242,112.236,18.5,115.5C12.1667,115.5,5.83333,115.5,-0.5,115.5C-0.5,109.167,-0.5,102.833,-0.5,96.5C2.05449,95.612,4.72116,95.2786,7.5,95.5Z"/>
+                </g>
+                <g>
+                  <path fill="#a3409e" d="M5.5,102.5C7.83333,102.5,10.1667,102.5,12.5,102.5C12.5,104.833,12.5,107.167,12.5,109.5C10.1667,109.5,7.83333,109.5,5.5,109.5C5.5,107.167,5.5,104.833,5.5,102.5Z"/>
+                </g>
+              </svg>              
+              <div class="attack"></div>
+            </div>
+            <div class="stat">
+              <img src="./public/img/icons/image2vector.svg" alt="">
+              <div class="defense"></div>
+            </div>
+          </div>
+        </div>
+        <div class="UI-container">
+          <div id="settings">
+            <svg width="57" height="57" viewBox="0 0 57 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#clip0_28_2)">
+              <path d="M55.8367 32.5714V24.4286C55.8367 23.7888 55.3132 23.2653 54.6734 23.2653H50.5555C49.9855 20.8806 49.0432 18.6355 47.7869 16.6114L50.7067 13.6916C51.1604 13.238 51.1604 12.5051 50.7067 12.0514L44.9485 6.29326C44.4948 5.83958 43.762 5.83958 43.3083 6.29326L40.3885 9.21305C38.3644 7.95673 36.1193 7.01448 33.7346 6.44448V2.32652C33.7346 1.68673 33.2112 1.16326 32.5714 1.16326H24.4285C23.7887 1.16326 23.2653 1.68673 23.2653 2.32652V6.44448C20.8806 7.01448 18.6355 7.95673 16.6114 9.21305L13.6916 6.29326C13.2379 5.83958 12.505 5.83958 12.0514 6.29326L6.29321 12.0514C5.83953 12.5051 5.83953 13.238 6.29321 13.6916L9.213 16.6114C7.95668 18.6355 7.01443 20.8806 6.44443 23.2653H2.32647C1.68668 23.2653 1.16321 23.7888 1.16321 24.4286V32.5714C1.16321 33.2112 1.68668 33.7347 2.32647 33.7347H6.44443C7.01443 36.1194 7.95668 38.3645 9.213 40.3886L6.29321 43.3084C5.83953 43.762 5.83953 44.4949 6.29321 44.9486L12.0514 50.7067C12.505 51.1604 13.2379 51.1604 13.6916 50.7067L16.6114 47.7869C18.6355 49.0433 20.8806 49.9855 23.2653 50.5555V54.6735C23.2653 55.3133 23.7887 55.8367 24.4285 55.8367H32.5714C33.2112 55.8367 33.7346 55.3133 33.7346 54.6735V50.5555C36.1193 49.9855 38.3644 49.0433 40.3885 47.7869L43.3083 50.7067C43.762 51.1604 44.4948 51.1604 44.9485 50.7067L50.7067 44.9486C51.1604 44.4949 51.1604 43.762 50.7067 43.3084L47.7869 40.3886C49.0432 38.3645 49.9855 36.1194 50.5555 33.7347H54.6734C55.3132 33.7347 55.8367 33.2112 55.8367 32.5714Z" fill="#818282"/>
+              <path d="M28.5 41.2959C35.5727 41.2959 41.2959 35.5726 41.2959 28.5C41.2959 21.4273 35.5727 15.7041 28.5 15.7041C21.4274 15.7041 15.7041 21.4273 15.7041 28.5C15.7041 35.5726 21.4274 41.2959 28.5 41.2959Z" fill="#34425E"/>
+              <path d="M28.5 34.3163C31.7107 34.3163 34.3164 31.7106 34.3164 28.5C34.3164 25.2894 31.7107 22.6837 28.5 22.6837C25.2894 22.6837 22.6837 25.2894 22.6837 28.5C22.6837 31.7106 25.2894 34.3163 28.5 34.3163Z" fill="#727272"/>
+              <path d="M54.6735 34.898H51.4554C50.9349 36.7579 50.1952 38.5365 49.2485 40.205L51.5294 42.4858C52.4349 43.3917 52.4349 44.8654 51.5293 45.7711L45.771 51.5293C44.8654 52.4351 43.3915 52.4349 42.4857 51.5293L40.205 49.2486C38.5365 50.1952 36.758 50.9349 34.898 51.4554V54.6735C34.898 55.9563 33.8543 57 32.5714 57H24.4286C23.1457 57 22.102 55.9563 22.102 54.6735V51.4554C20.242 50.9349 18.4633 50.1952 16.7949 49.2485L14.5142 51.5293C13.6083 52.435 12.1346 52.4349 11.2289 51.5293L5.47072 45.7711C4.565 44.8654 4.565 43.3915 5.47072 42.4857L7.75142 40.205C6.80475 38.5367 6.06515 36.758 5.54459 34.898H2.32653C1.04368 34.898 0 33.8543 0 32.5714V24.4286C0 23.1457 1.04368 22.102 2.32653 22.102H5.54459C6.06515 20.242 6.80475 18.4633 7.75154 16.7949L5.47072 14.5142C4.565 13.6083 4.565 12.1346 5.47072 11.2289L11.2289 5.47072C12.1347 4.565 13.6085 4.565 14.5143 5.47072L16.795 7.75142C18.4635 6.80464 20.2421 6.06503 22.1022 5.54447V2.32653C22.1022 1.04368 23.1458 -1.2964e-06 24.4287 -1.2964e-06H32.5715C33.8544 -1.2964e-06 34.8981 1.04368 34.8981 2.32653V5.54459C36.7581 6.06515 38.5367 6.80475 40.2051 7.75153L42.4859 5.47072C43.3915 4.56488 44.8654 4.56512 45.7712 5.47072L51.5294 11.2289C52.435 12.1346 52.435 13.6083 51.5294 14.5142L49.2486 16.7949C50.1954 18.4633 50.935 20.242 51.4555 22.1019H54.6735C55.9563 22.1019 57 23.1456 57 24.4285V32.5713C57 33.8543 55.9563 34.898 54.6735 34.898ZM54.6735 24.4286H50.5555C50.0172 24.4286 49.5493 24.0592 49.424 23.5358C48.8875 21.2905 48.0041 19.1672 46.7986 17.2249C46.5136 16.7658 46.5824 16.171 46.9644 15.7889L49.8843 12.8741L44.131 7.11593L41.2112 10.0357C40.829 10.418 40.2342 10.4864 39.7752 10.2016C37.833 8.99611 35.7097 8.11273 33.4642 7.576C32.9408 7.45083 32.5714 6.98285 32.5714 6.44461V2.32653H24.4286V6.44449C24.4286 6.98273 24.0592 7.45071 23.5358 7.57588C21.2904 8.11261 19.1671 8.99599 17.2249 10.2015C17.0356 10.3191 16.823 10.3763 16.6119 10.3763C16.3113 10.3763 16.0134 10.26 15.7889 10.0356L12.8741 7.11581L7.11593 12.8691L10.0357 15.7889C10.4179 16.171 10.4865 16.7658 10.2016 17.2249C8.99611 19.1671 8.11273 21.2904 7.576 23.5358C7.45071 24.0592 6.98273 24.4286 6.44449 24.4286H2.32653V32.5714H6.44449C6.98273 32.5714 7.45071 32.9408 7.57588 33.4642C8.11261 35.7096 8.996 37.8329 10.2015 39.7751C10.4864 40.2341 10.4177 40.829 10.0356 41.2111L7.11581 44.1259L12.8691 49.8841L15.7889 46.9643C16.171 46.5821 16.7658 46.5136 17.2249 46.7984C19.1671 48.0039 21.2904 48.8873 23.5358 49.424C24.0592 49.5492 24.4286 50.0172 24.4286 50.5554V54.6735H32.5714V50.5555C32.5714 50.0173 32.9408 49.5493 33.4642 49.4241C35.7097 48.8874 37.833 48.004 39.7752 46.7985C40.2341 46.5136 40.829 46.5821 41.2112 46.9644L44.1261 49.8842L49.8843 44.1309L46.9644 41.2111C46.5824 40.829 46.5136 40.2342 46.7986 39.7751C48.0041 37.8326 48.8875 35.7093 49.424 33.4642C49.5492 32.9408 50.0172 32.5714 50.5555 32.5714H54.6735V24.4286Z" fill="#231F20"/>
+              </g>
+              <defs>
+              <clipPath id="clip0_28_2">
+              <rect width="57" height="57" fill="white" transform="matrix(1 0 0 -1 0 57)"/>
+              </clipPath>
+              </defs>
+            </svg>         
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="background"></div>
+        <div id="enemies">
+          <!-- Gets filled with javascript -->
+        </div>
+        <div id="rooms">
+          <!-- Gets filled with javascript -->
+        </div>
+
+        <button class="continueBtn hide">Continue</button>
+      </div>
+      <div class="player-actions">
+        <div class="action-buttons">
+          <div class="attackPopUp">
+            <div class="option option-melee" id="meleeAtk">Melee</div>
+            <div class="option option-ranged" id="rangedAtk">Ranged</div>
+          </div>
+          <div class="combat btn-row">
+            <div class="btn attack disabled">Attack</div>
+            <div class="btn item disabled">Item</div>
+            <div class="btn flee disabled">Flee</div>
+          </div>
+          <div class="utility btn-row">
+            <div class="btn">Inventory</div>
+            <div class="btn">Bestiary</div>
+            <div class="btn">Check</div>
+          </div>
+        </div>
+      </div>
+      <div id="gameOver">
+        <h1>Game over</h1>
+        <a href="">Retry</a>
+      </div>
+      <div id="controlsPopup">
+        <div class="top">
+          <h1>Controls</h1>
+        </div>
+        <div class="bottom button-settings">
+          <div class="row">
+            <p>Struggle</p>
+            <div class="buttons">
+              <div class="btn">
+                <img src="public/img/icons/btn-left.svg" alt="">
+              </div>
+              <div class="btn">
+                <img src="public/img/icons/btn-right.svg" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <p>Bestiary</p>
+            <div class="btn btn-noChange">
+              <img src="public/img/icons/b-button.svg" alt="">
+            </div>
+          </div>
+          <div class="row">
+            <p>Inventory</p>
+            <div class="btn btn-noChange">
+              <img src="public/img/icons/i-button.svg" alt="">
+            </div>
+          </div>
+          <div class="buttons save-cancel">
+            <div class="btn cancel">
+              <img src="public/img/icons/cancel-btn.svg" alt="">
+            </div>
+            <div class="btn save">
+              <img src="public/img/icons/save-btn.svg" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="settingsPopup">
+        <div class="top">
+          <h1>Settings</h1>
+          <div class="cross">
+            <svg width="35" height="35" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20.0541" y="20.0541" width="11.4595" height="11.4595" fill="white"/>
+              <rect x="32.946" y="10.027" width="10.027" height="10.027" fill="white"/>
+              <rect x="42.973" width="10.027" height="10.027" fill="white"/>
+              <rect width="10.027" height="10.027" fill="white"/>
+              <rect x="42" y="42" width="10.027" height="10.027" fill="white"/>
+              <rect x="31.5135" y="31.5135" width="10.027" height="10.027" fill="white"/>
+              <rect x="10.0271" y="10.027" width="10.027" height="10.027" fill="white"/>
+              <rect x="10.027" y="42" width="10.027" height="10.027" transform="rotate(90 10.027 42)" fill="white"/>
+              <rect x="20.0541" y="31.5135" width="10.027" height="10.027" transform="rotate(90 20.0541 31.5135)" fill="white"/>
+            </svg>
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="row">
+            <p>Volume</p>
+            <div class="volume-settings">
+
+              <audio id="menu-audio">
+                <source src="public/sound/explosion.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+              <div class="volume-control">
+                <div class="minus" id="minus">-</div>
+                <div class="volume-bars">
+                  <div class="volume-bar" id="bar1"></div>
+                  <div class="volume-bar" id="bar2"></div>
+                  <div class="volume-bar" id="bar3"></div>
+                  <div class="volume-bar" id="bar4"></div>
+                  <div class="volume-bar" id="bar5"></div>
+                </div>
+                <div class="plus" id="plus">+</div>
+              </div>
+              
+            </div>
+          </div>
+          <div class="row">
+            <p>Music</p>
+            <div class="audio-music">
+                <audio id="music">
+                    <source src="public/sound/night-city-bgm.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        
+            <div class="toggle-music-container">
+                <input id="toggle-on" class="toggle toggle-left" name="toggle" value="false" type="radio" >
+                <label for="toggle-on" class="toggle-music on">On</label>
+                <input id="toggle-off" class="toggle toggle-right" name="toggle" value="true" type="radio" checked>
+                <label for="toggle-off" class="toggle-music off">Off</label>
+            </div>
+          </div>        
+          <div class="row">
+            <p>Controls</p>
+            <div class="btn controls">
+              <img src="public/img/icons/open-btn.svg" alt="">
+            </div>
+          </div>
+          <div class="row">
+            <p>Tutorial</p>
+            <div class="btn tutorial">
+              <!-- <a href="https://anthonytoons.nl"> -->
+                <img src="public/img/icons/open-btn.svg" alt="">
+              <!-- </a> -->
+            </div>
+          </div>
+        </div>
+        <div class="btn quit-btn">
+          <img src="public/img/icons/quit-btn.svg" alt="">
+        </div>
+      </div>
+    </main>
+    <div class="tutorial-screen">
+      <div class="hand-overlay">
+        <img src="public/img/tutorial-pages/tutorial-page-1.png" alt="">
+      </div>
+      <div class="nextPage">
+        <p>Next page:</p>
+        <div class="btn next-page">
+          <img src="public/img/icons/btn-right.svg" alt="">
+        </div>
+      </div>
+      <div class="return">
+        <p>Go back &uarr;</p>
+      </div>
+    </div>
+    <script src="public/scripts/enemies.js"></script>
+    <script src="public/scripts/dialog.js"></script>
+    <script src="public/scripts/dungeon.js"></script>
+    <script src="public/scripts/enemyGenerating.js"></script>
+    <script src="public/scripts/settings.js"></script>
+  </body>
+</html>

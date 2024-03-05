@@ -1,0 +1,700 @@
+* {
+   padding: 0;
+   margin: 0;
+   box-sizing: border-box;
+}
+body {
+    overflow: hidden;
+}
+:root{
+    --blue: #1c106cc4
+}
+@font-face {
+    font-family: joystix;
+    src: url(../fonts/joystix\ monospace.otf);
+}
+#select-enemy-popup{
+    display: none;
+}
+#select-enemy-popup.show{
+    display: block;
+    font-family: joystix;
+    font-size: 30px;
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+}
+.scanlines-overlay {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    transition: all 1.5s;
+    /* scanlines */
+        background: linear-gradient(
+            to top, 
+            #000000, #000000, 
+            #333333, #333333, 
+            #000000, #000000,
+            #333333, #333333,
+            #000000, #000000,
+            #333333, #333333, 
+            #000000, #000000, 
+            #333333, #333333 
+        );
+        background-size: cover;
+        background-size: 100% 35px;
+        opacity: 0.21;
+    
+    /* retro stuff */
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        font-size: 50px;
+        text-align: center;
+        text-shadow: 0 0 10px #00ff00;
+    
+    /* flex stuff */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+}
+
+main {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    border: 20px solid #424742;
+    transition: all 1.5s;
+}
+main.move {
+    transform: translate(0,-100vh);
+}
+
+.scanlines-overlay.move {
+    transform: translate(0,-100vh);
+}
+.tutorial-screen {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    bottom: -100vh;
+    width: 100vw;
+    transition: all 2s;
+}
+.tutorial-screen.show {
+    bottom: 0;
+    pointer-events: all;
+    opacity: 1;
+}
+.tutorial-screen img {
+    width: 65%;
+    transition: all 2s;
+}
+.hand-overlay {
+    cursor: zoom-in;
+    transform: translate(-100px) scale(1.2);
+}
+.nextPage,.return{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    font-size: 24px;
+    font-family: joystix;
+    color: #fff;
+    z-index: 999;
+    position: absolute;
+    bottom: 20px;
+    right: 0px;
+}
+.return {
+    bottom: 150px;
+    right: 50px;
+    cursor: pointer;
+}
+.nextPage img {
+    width: 50px !important;
+    margin-left: 10px;
+}
+
+.broken-crack {
+    position: absolute;
+    z-index: 99;
+    opacity: 0.8;
+    transform: rotate(303deg);
+    top: 85px;
+    right: 0px;
+}
+.broken-crack img {
+    width: 300px;
+    height: 180px;
+}
+.UI-container{
+    width: 50%;
+    height: 50%;
+    padding: 10px;
+}
+.bottom-left {
+    display: flex;
+    align-items: end;
+}
+.stat {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size: 24px;
+    font-family: joystix;
+    color: #fff;
+}
+.stat svg {
+    margin: 10px;
+}
+.stat img,
+.stat svg {
+    width: 32pt;
+    height: 26pt;
+    margin: 10px;
+}
+#ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    height: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid #000;
+}
+.container {
+    width: 100%;
+    height: 75%;
+    position: relative;
+}
+.background {
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url(../img/backGrounds/gamebackground.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#rooms {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: auto;
+    position: absolute;
+    top: 75%;
+    left: 0;
+    z-index: 100;
+}
+#rooms img {
+    cursor: pointer;
+}
+
+.hide {
+    display: none;
+}
+.target {
+    font-size: 18px;
+    color: crimson;
+}
+.player-actions {
+    width: 100%;
+    height: 23%;
+    padding: 20px 10px 20px 5px;
+    border: 2px solid #fff;
+    background-color: var(--blue);
+    border-radius: 5px;
+    color: #fff;
+    font-family: joystix;
+    margin: 20px auto 20px auto;
+}
+.action-buttons {
+    display: flex;
+}
+.btn-row {
+    margin: 0 40px;
+}
+.combat {
+    margin-left: unset;
+}
+.action-buttons .btn {
+    width: fit-content;
+    padding: 10px;
+    margin: 2px;
+    font-size: 30px;
+}
+#gameOver {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 100%;
+    width: 100%;
+    background: #000;
+    color: red;
+    transition: all 3s;
+}
+#gameOver.show {
+    opacity: 1;
+    pointer-events: all;
+    transition: all 3s;
+}
+body {
+    background-color: #000;
+}
+.walking.direction-0{
+    animation: walking-left 6.5s forwards ease-in-out;
+}
+.walking.direction-1{
+    animation: walking-right 6.5s forwards ease-in-out;
+}
+@keyframes walking-left {
+    0%{
+        background-size: 110%;
+        background-position: 100% 100%;
+    }
+    25% {
+        background-size: 125%;
+        background-position: 80% 80%;
+    }
+    35% {
+        background-size: 145%;
+        background-position: 70% 70%;
+    }
+    50% {
+        background-size: 160%;
+        background-position: 60% 80%;
+    }
+    65% {
+        background-size: 175%;
+        background-position: 50% 70%;
+    }
+    75% {
+        background-size: 185%;
+        background-position: 45% 70%;
+        opacity: 0.9;
+    }
+    100%{
+        background-size: 200%;
+        background-position: 30% 60%;
+        opacity: 0;
+    }
+}
+@keyframes walking-right {
+    0% {
+        background-size: 110%;
+        background-position: 100% 90%;
+    }
+    25% {
+        background-size: 125%;
+        background-position: 80% 80%;
+    }
+    35% {
+        background-size: 145%;
+        background-position: 70% 60%;
+    }
+    50% {
+        background-size: 160%;
+        background-position: 70% 80%;
+    }
+    65% {
+        background-size: 175%;
+        background-position: 80% 60%;
+    }
+    75% {
+        background-size: 185%;
+        background-position: 90% 70%;
+        opacity: 0.9;
+    }
+    100% {
+        background-size: 200%;
+        background-position: 85% 50%;
+        opacity: 0;
+    }
+}
+#floorNumber{
+    font-family: joystix;
+    font-size: 14px;
+    letter-spacing: 5px;
+    padding-left: 10px;
+    color: #fff;
+}
+#enemies {
+    opacity: 0;
+}
+#enemies.inside-room{
+    animation: gain-sight 4s forwards ease-in-out;
+}
+.background.inside-room{
+    opacity: 0.8;
+    animation: gain-sight 5s forwards ease-in-out;
+}
+.loot-room{
+    background-image: url(../img/backGrounds/lootroom.jpg);
+}
+.enemy-room{
+    background-image: url(../img/backGrounds/enemyroom.jpg);
+}
+.empty-room{
+    background-image: url(../img/backGrounds/emptyroom.jpg);
+}
+.armor-room{
+    background-image: url(../img/backGrounds/armorroom.jpg);
+}
+
+@keyframes gain-sight {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+.combat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.action-buttons .btn {
+    position: relative;
+    padding: 10px 25px 10px 10px;
+    font-size: 24px;
+    color: #fff;
+    font-family: joystix;
+    margin-left: 20px;
+    cursor: pointer;
+    width: fit-content;
+    white-space: nowrap;
+}
+a, div, section, span, p, .btn{
+    user-select: none;
+}
+.action-buttons .btn.disabled{
+    opacity: .5;
+    pointer-events: none;
+}
+.action-buttons .btn:hover::before {
+    opacity: 1;
+}
+.action-buttons .btn::before {
+    content: "\25B6";
+    font-family: joystix;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotateY(180deg);
+    opacity: 0;
+}
+#settings, .cross {
+    cursor: pointer;
+    width: fit-content;
+}
+#settings {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+#settingsPopup,
+#controlsPopup{
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 998;
+    transform: translate(-50%,-50%);
+    padding: 10px;
+    width: 55%;
+    height: 500px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    background-color: var(--blue);
+    font-family: joystix;
+    transition: all .2s;
+}
+#settingsPopup{
+    transform: translate(-50%,-50%) scale(0);
+}
+#settingsPopup.show{
+    transform: translate(-50%,-50%) scale(1);
+}
+.quit-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 30px;
+}
+#settingsPopup.show,
+#controlsPopup.show {
+    opacity: 1;
+    pointer-events: all;
+    color: #fff;
+}
+#controlsPopup.show{
+    width: 35%;
+    left: unset;
+    right: 50px;
+    transform: translate(0,-50%);
+}
+#settingsPopup.aside{
+    opacity: .5;
+    pointer-events: none;
+    background-color: #000000d3;
+    left: 50px;
+    transform: translate(0,-50%);
+}
+#controlsPopup .buttons{
+    display: flex;
+    justify-content: end;
+    width: 100%;
+}
+#controlsPopup .buttons.save-cancel {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+.buttons .btn {
+    margin: 10px;
+}
+.top, .bottom {
+    width: 95%;
+    margin: 20px auto;
+}
+.top, .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.cross {
+    width: 50px;
+    height: 50px;
+}
+.row {
+    margin: 20px 0;
+    font-size: 20px;
+}
+.btn {
+    width: 150px;
+    cursor: pointer;
+}
+.btn img {
+    width: 100%;
+}
+.button-settings .row .buttons .btn {
+    width: fit-content;
+}
+.button-settings .row .btn img {
+    width: 70px;
+}
+
+#enemies {
+    z-index: 997;
+    position: absolute;
+    top: 45%;
+    left: 0%;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.minus,
+.plus {
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 25px;
+}
+
+.volume-bars {
+    display: flex;
+    align-items: end;
+}
+
+.volume-bar {
+    width: 20px;
+    height: 100px;
+    background-color: #686868;
+    margin: 0 5px;
+}
+#bar1{
+    height: 30px;
+}
+#bar2{
+    height: 40px;
+}
+#bar3{
+    height: 50px;
+}
+#bar4{
+    height: 60px;
+}
+#bar5{
+    height: 70px;
+}
+
+.toggle-music {
+    color: #000000;
+    display: inline-block;
+    padding: 10px;
+    width: 80px;
+    position: relative;
+    text-align: center;
+    transition: background 600ms ease, color 600ms ease;
+}
+input[type="radio"].toggle {
+    display: none;
+}
+input[type="radio"].toggle + label {
+    outline: none;
+    cursor: pointer;
+    min-width: 60px;
+    position: relative;
+    z-index: 1;
+}
+input[type="radio"].toggle + label:after {
+    background: #ffffff;
+    content: "";
+    height: 100%;
+    position: absolute;
+    top: 0;
+    transition: left 200ms cubic-bezier(0.77, 0, 0.175, 1);
+    width: 100%;
+    z-index: -1;
+}
+input[type="radio"].toggle.toggle-left + label {
+    border-right: 0;
+}
+input[type="radio"].toggle.toggle-left + label:after {
+    left: 100%;
+}
+input[type="radio"].toggle.toggle-right + label:after {
+    left: -100%;
+}
+input[type="radio"].toggle:checked + label {
+    cursor: default;
+    color: #000000;
+    transition: color 200ms;
+    z-index: 2;
+}
+input[type="radio"].toggle:checked + label:after {
+    left: 0;
+}
+
+.toggle-music-container {
+    display: flex;
+    width: fit-content;
+    background-color: #000000;
+}
+
+.btn-noChange:hover{
+    animation: shake .5s forwards;
+}
+@keyframes shake {
+    0%{transform: translate(0,0);}
+    25%{transform: translate(5px,0);}
+    75%{transform: translate(-5px,0);}
+    100%{transform: translate(0,0);}
+}
+
+/* enemy traits */
+.ranged {
+    transform: translateY(-40px);
+    opacity: .9;
+}
+.enemy {
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.enemy canvas.ranged  {
+    max-height: 250px;
+    max-width: 300px;
+}
+.enemy-health {
+    width: 100%;
+    height: 15px;
+    margin: 0 10px 10px 10px;
+    transition: all .5s;
+}
+.enemy-health div {
+    background-color: #cd0c0c;
+    height: 100%;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    transition: all .5s;
+}
+.enemyStatContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.enemyType-icon img{
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 0 5px #fff);
+}
+.attackPopUp{
+    border: 2px solid #fff;
+    border-radius: 5px;
+    background-color: #2c5292;
+    height: fit-content;
+    padding: 15px;
+    transform: scale(0);
+    z-index: 5;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+.attackPopUp.show{
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: all;
+}
+.attackPopUp .option {
+    margin: 15px;
+    position: relative;
+    padding: 0 20px;
+    cursor: pointer;
+}
+.attackPopUp .option:hover::before {
+    opacity: 1;
+}
+.attackPopUp .option::before {
+    content: "\25B6";
+    font-family: joystix;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotateY(180deg);
+    opacity: 0;
+}
+
+
+.target {
+    filter: drop-shadow(0 0 20px red);
+}

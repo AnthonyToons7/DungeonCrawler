@@ -1,0 +1,15 @@
+[
+    {
+        "Void":"public/img/spriteSheets/Void-sheet.png"
+    },
+    {
+        "Snake":"public/img/spriteSheets/Snake-sheet.png"
+    },
+    {
+        "Fallen-Rose-knight":"public/img/spriteSheets/Fallen-rose-knight-sheet.png"
+    },
+    {
+        "Player":"",
+        "playertrue":"true"
+    }
+]

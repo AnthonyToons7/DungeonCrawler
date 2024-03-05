@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Snake",
+        "level": "1",
+        "hp": "12",
+        "atk": "4",
+        "def": "3",
+        "equips": "",
+        "trait": "poison",
+        "type": "ranged"
+    }
+]
