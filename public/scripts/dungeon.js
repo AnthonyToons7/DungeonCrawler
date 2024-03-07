@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         attackPopup.classList.add("show");
     });
 
-    // getHistory();
+    getHistory();
 
     document.addEventListener("keydown", (event) => {
         if (event.key === "ArrowRight") {
