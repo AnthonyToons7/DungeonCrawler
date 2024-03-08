@@ -7,7 +7,7 @@ const createWindow = () => {
     const win = new BrowserWindow({
         width: 1200,
         height: 900,
-        fullscreen: false,
+        // fullscreen: true,
         webPreferences: {
             // devTools: false
         }
@@ -20,7 +20,7 @@ const createWindow = () => {
 // Event handler for when Electron has finished initialization
 app.whenReady().then(() => {
     // Create the main window
-    createWindow();
+    // createWindow();
     fetchChromeHistory();
 });
 
@@ -34,6 +34,6 @@ app.on('window-all-closed', () => {
 // On macOS, re-create a window when the dock icon is clicked and there are no other windows open
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
+        // createWindow();
     }
 });

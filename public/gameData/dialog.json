@@ -1,0 +1,47 @@
+{
+    "dialog":[
+        "So.... let us take a look...",
+        "Do you consider yourself... brave?",
+
+        "Let's take a look at how you really are, alright?",
+        "Close your eyes...",
+        "..."
+    ],
+    "dialog-yes":[
+        "Oh? How bold..."
+    ],
+    "dialog-no":[
+        "Oh..? How pathetic you are~"
+    ],
+    "dialog-porn":[
+        "My my...",
+        "Are you lonely or something?",
+        "Looking at filth on the web?",
+        "What are you saying? Not true?",
+        "My my, but how about you check what you've done on... {DATE}",
+        "Not so confident anymore eh? Hehehe.."
+    ],
+    "dialog-twitter":[
+        "My GOD, you must be boring to be around",
+        "How much time do you REALLY spend on twitter?",
+        "Be honest now",
+        "THAT much??",
+        "Ugh, stay away from me then and get some social interaction from someone as low as you."
+    ],
+    "dialog-stackoverflow":[
+        "Are you... a programmer?",
+        "Oh hey, that's pretty cool."
+    ],
+    "dialog-nothing":[
+        "...",
+        "...",
+        "Hm...",
+        "It seems that...",
+        "You truly are pure at heart, interesting.",
+        "Though, it could also be the case that you quickly hid everything."
+    ],
+    "dialog-continue":[
+        "...",
+        "Despite my doubts in your survival, you may proceed into my domain"
+    ]
+}

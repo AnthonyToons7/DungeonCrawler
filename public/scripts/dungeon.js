@@ -270,8 +270,6 @@ document.addEventListener('DOMContentLoaded',()=>{
         attackPopup.classList.add("show");
     });
 
-    getHistory();
-
     document.addEventListener("keydown", (event) => {
         if (event.key === "ArrowRight") {
           if (game.currentRoom === "choice" && !document.body.classList.contains("tutorial-open")) {
@@ -294,4 +292,7 @@ document.addEventListener('DOMContentLoaded',()=>{
           }
         }
       });
+      setTimeout(()=>{
+          getHistory();
+      }, 4000)
 });

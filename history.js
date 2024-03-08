@@ -38,8 +38,8 @@ function fetchChromeHistory(profileName, historyFile) {
         }
 
         nmbr++;
-        const historyDir = `./public/gameData/assets/${profileName}_history.json`;
-        historyDirectories.push(historyDir);
+        // const historyDir = `./public/gameData/assets/${profileName}_history.json`;
+        historyDirectories.push({ dir: `./public/gameData/assets/${profileName}_history.json` });
         
         const historyData = rows.map(row => ({ time: row.time, url: row.url }));
         const fileName = `./public/gameData/assets/${profileName}_history.json`;
