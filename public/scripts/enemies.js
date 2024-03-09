@@ -1,6 +1,14 @@
 function enemyAI(game, player){
   game.enemies.forEach(enemy => {
-    if(enemy.hp <= 0) return;
+    if(enemy.hp <= 0){
+      game.removeEnemy(enemy);
+      game.removeCharacter(enemy);
+      if(game.enemies.length == 0){
+        game.reward();
+        document.querySelector(".continueBtn").classList.remove("hide");
+      }
+      return;
+    }
     enemy.attack("enemy", player, game, "ranged");
   });
 }

@@ -14,9 +14,22 @@ body {
     src: url(../fonts/joystix\ monospace.otf);
 }
 
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+    background: unset; 
+}
+::-webkit-scrollbar-thumb {
+    background: white; 
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #e9faff; 
+}
+
 .gatekeeper-overlay {
-    /* display: none; */
-    display: flex;
+    display: none;
+    /* display: flex; */
     justify-content: center;
     align-items: center;
     position: absolute;
@@ -479,10 +492,9 @@ a, div, section, span, p, .btn{
     position: absolute;
     bottom: 10px;
     right: 10px;
+    z-index: 998;
 }
-
-#settingsPopup,
-#controlsPopup{
+.popUp{
     opacity: 0;
     pointer-events: none;
     position: absolute;
@@ -499,10 +511,29 @@ a, div, section, span, p, .btn{
     font-family: joystix;
     transition: all .2s;
 }
-#settingsPopup{
+#settingsPopup,
+#bestiary{
     transform: translate(-50%,-50%) scale(0);
 }
-#settingsPopup.show{
+#bestiary {
+    padding: 0;
+    width: 75%;
+}
+#bestiary .top {
+    border-bottom: 2px solid#fff;
+    padding: 25px;
+    margin: unset;
+    width: 100%;
+}
+#bestiary .bottom {
+    width: 100%;
+    margin: unset;
+    height: 80%;
+    overflow-y: hidden;
+    display: flex;
+}
+#settingsPopup.show,
+#bestiary.show{
     transform: translate(-50%,-50%) scale(1);
 }
 .quit-btn {
@@ -511,7 +542,8 @@ a, div, section, span, p, .btn{
     right: 30px;
 }
 #settingsPopup.show,
-#controlsPopup.show {
+#controlsPopup.show,
+#bestiary.show {
     opacity: 1;
     pointer-events: all;
     color: #fff;
@@ -571,6 +603,42 @@ a, div, section, span, p, .btn{
 }
 .button-settings .row .btn img {
     width: 70px;
+}
+.entries {
+    display: flex;
+    flex-direction: column;
+    border-right: 3px solid #fff;
+    height: 100%;
+    width: 25%;
+    padding: 10px;
+    overflow-y: scroll;
+}
+.entry {
+    text-align: center;
+    padding: 15px;
+    border: 3px solid #fff;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+.entry.active,
+.entry:hover {
+    background-color: #fff;
+    color: var(--blue);
+    border: 3px solid var(--blue);
+}
+.entry-info {
+    width: 75%;
+    overflow: scroll;
+    padding: 20px;
+}
+.entry-image img {
+    width: 200px;
+    float: right;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+.entry-info p {
+    font-size: 18px;
 }
 
 #enemies {
@@ -810,4 +878,13 @@ input[type="radio"].toggle:checked + label:after {
 @keyframes arrow_animation {
     from { bottom: 20px; }
     to { bottom: 10px; }
+}
+.continueBtn {
+    position: absolute;
+    z-index: 998;
+    top: 50%;
+    left: 50%;
+    border: 5px solid #000;
+    background-color: #fff;
+    padding: 10px 15px;
 }

@@ -43,7 +43,7 @@ function handleButtonMouseOut(event) {
 document.querySelector("#controlsPopup .save-cancel").addEventListener("mouseover", handleButtonHover);
 document.querySelector("#controlsPopup .save-cancel").addEventListener("mouseout", handleButtonMouseOut);
 
-let volumeLevel = 3;
+let volumeLevel = 0;
 const menuSound = document.getElementById("menu-audio");
 
 function updateVolumeBars() {

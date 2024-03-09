@@ -3,6 +3,7 @@ class Game {
     constructor(floor){
         this.floor = floor,
         this.enemiesDefeated = 0,
+        this.loot = 0,
         this.inventory = [],
         this.characters = [],
         this.enemies = []
@@ -41,6 +42,11 @@ class Game {
         });
 
     }
+    reward(){
+        this.currentRoom == "loot" ? 
+            this.loot += Math.floor(200 * (this.floor / Math.random())) :
+                this.loot += Math.floor(85 * (this.floor / Math.random()));
+    }
     async spawnEnemy(){
         enemyid++;
         const stats = await generateEnemy(this.enemies);
@@ -54,6 +60,11 @@ class Game {
 
         this.addCharacter(enemy);
         this.addEnemy(enemy);
+
+        // push the enemy into the bestiary
+        if (!unlockedEntries.includes(enemy.name)) {
+            unlockedEntries.push(enemy.name);
+        }        
 
         // stat bars
         const enemyStatContainer= document.createElement("div");
@@ -85,6 +96,9 @@ class Game {
     }
     addCharacter(character){
         this.characters.push(character);
+    }
+    removeEnemy(character){
+        this.enemies.splice(character, 1);
     }
     removeCharacter(character){
         this.characters.splice(character, 1);
