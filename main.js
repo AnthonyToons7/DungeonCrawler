@@ -11,7 +11,7 @@ const createWindow = () => {
         webPreferences: {
             // devTools: false
         },
-        icon: 'public/img/bestiary/Snake.png',
+        icon: 'game-icon.png',
     });
     
     win.loadFile('index.html');

@@ -245,7 +245,7 @@ class Character {
             if (enemyIndex !== -1) {
                 let bonusAtk = 0;
 
-                // Apply any bonusses or flaws from equips
+                // Apply any bonusses or flaws from equips.
                 if(type === "rangedAtk" && this.equips){
                     switch(this.currentlyEquipped){
                         case "Death blow bow":
@@ -474,6 +474,19 @@ const struggle = (damage, enemy, player, callback) => {
     let finalDamage;
     let counterattackDamage;
     console.log("Quick! Press!");
+
+    const container = document.createElement("div");
+    const txt = document.createElement("h2");
+    const btnContainer = document.createElement("div");
+    const btn_left = document.createElement("img");
+    const btn_right = document.createElement("img");
+
+    txt.textContent = "Press in sequence!";
+
+    btnContainer.append(btn_left,btn_right);
+    container.append(txt,btnContainer);
+    document.getElementById("quickTimeEvents").appendChild(container);
+
     const keyPressHandler = (event) => {
         if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
             const expectedDirection = requiredPresses % 2 === 0 ? "ArrowLeft" : "ArrowRight";
@@ -503,6 +516,7 @@ const struggle = (damage, enemy, player, callback) => {
         }
         console.log([finalDamage, counterattackDamage]);
         callback([finalDamage, counterattackDamage]);
+        container.remove();
     }, 3000);
 }
 
