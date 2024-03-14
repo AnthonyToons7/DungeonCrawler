@@ -4,6 +4,7 @@ function enemyAI(game, player){
       game.removeEnemy(enemy);
       game.removeCharacter(enemy);
       if(game.enemies.length == 0){
+        document.getElementById("enemies").classList.add("inside-room");
         game.reward();
         document.querySelector(".continueBtn").classList.remove("hide");
       }

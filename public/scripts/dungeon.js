@@ -1,4 +1,13 @@
 let enemyid = 0;
+const randomEquips = [
+    "Fog blade", 
+    "Poison dagger", 
+    "Breakthrough armor", 
+    "Drainer armor", 
+    "Death blow bow", 
+    "Clover bow"
+];
+
 class Game {
     constructor(floor){
         this.floor = floor,
@@ -6,8 +15,10 @@ class Game {
         this.loot = 0,
         this.inventory = [],
         this.characters = [],
-        this.enemies = []
-        this.currentRoom = "choice"
+        this.enemies = [],
+        this.currentRoom = "choice",
+        this.activeStatusses = [];
+        this.turnCount = 0;
     }
     thunderStrike(){
         this.characters.forEach(character=>{
@@ -33,20 +44,51 @@ class Game {
                 playSound("menu-sound.mp3");
                 this.currentRoom = room;
                 document.querySelectorAll(".room").forEach(room=>room.remove());
-                document.querySelector(".background").classList.add("walking");
-                document.querySelector(".background").classList.add("direction-"+index);
-                setTimeout(() => {
+                // document.querySelector(".background").classList.add("walking");
+                // document.querySelector(".background").classList.add("direction-"+index);
+                // setTimeout(() => {
                     room.enter();
-                }, 7000);
+                // }, 7000);
             });
         });
 
     }
-    reward(){
-        this.currentRoom == "loot" ? 
-            this.loot += Math.floor(200 * (this.floor / Math.random())) :
-                this.loot += Math.floor(85 * (this.floor / Math.random()));
+    reward() {
+        let lootGain;
+        if (this.currentRoom == "loot") {
+            lootGain = Math.floor(200 * (this.floor / Math.random()));
+        } else {
+            lootGain = Math.floor(85 * (this.floor / Math.random()));
+        }
+    
+        this.loot += lootGain;
+        console.log("lootgain: " + lootGain);
+        console.log("totalloot: " + this.loot);
+    
+        // Convert loot value to a string
+        const lootString = this.loot.toString();
+    
+        // Check if the loot value exceeds 10000, 100000, 1000000, etc.
+        let numDigits = Math.floor(Math.log10(this.loot)) + 1;
+        let numH1Elements = document.querySelectorAll(".loot-value h1").length;
+    
+        while (numDigits > numH1Elements) {
+            // Create a new h1 element
+            const newH1 = document.createElement("h1");
+            newH1.textContent = "0";
+            document.querySelector(".loot-value").appendChild(newH1);
+            numH1Elements++;
+        }
+    
+        // Update the text content of each h1 element with the corresponding digit from the loot value
+        const h1Elements = document.querySelectorAll(".loot-value h1");
+        for (let i = 0; i < numH1Elements; i++) {
+            h1Elements[i].textContent = lootString.charAt(i) || '0'; // Use '0' if there are fewer digits than h1 elements
+        }
     }
+    
+    
+    
     async spawnEnemy(){
         enemyid++;
         const stats = await generateEnemy(this.enemies);
@@ -122,11 +164,21 @@ class Room {
                 break;
             case "Loot":
                 background.classList.add("loot-room");
-                console.log("Loot! +100 gold");
+                this.game.reward();
                 break;
             case "Armory":
                 background.classList.add("armor-room");
-                console.log("You found... a sword! +5 ATK");
+                
+                const stats = ["hp", "atk", "def", "equips"];
+                
+                const rand = Math.floor(Math.random() * stats.length);
+                if(stats[rand] == "equips"){
+                    const randomEquip = Math.floor(Math.random() * randomEquips.length);
+                    randomEquips.splice(randomEquip, 1)
+                    this.player.equips += randomEquip;
+                }
+                this.player[stats[rand]] += 1;
+                this.player.update();
                 break;
             case "Trap":
                 background.classList.add("trap-room");
@@ -137,22 +189,9 @@ class Room {
                 background.classList.add("enemy-room");
                 console.log("Enemy incoming");
                 this.game.spawnEnemy();
-
-                const melee = document.querySelector(".attackPopUp .option-melee");
-                const ranged = document.querySelector(".attackPopUp .option-ranged");
-                melee.addEventListener("click",()=>{
-                    enemySelection(melee.id,this.player,this.game);
-                });
-                ranged.addEventListener("click",()=>{
-                    enemySelection(ranged.id,this.player,this.game);
-                });
-                
                 break;
         }
-
-        
-
-
+        this.game.currentRoom = this.type;
         background.classList.remove("walking");
         if (background.classList.contains("direction-0")) {
             background.classList.remove("direction-0");
@@ -163,7 +202,6 @@ class Room {
         background.classList.add("inside-room");
         document.getElementById("enemies").classList.add("inside-room");
 
-            
         this.type != "Enemy" ? document.querySelector(".continueBtn").classList.remove("hide") : document.querySelector(".continueBtn").classList.add("hide");
     }
 }
@@ -177,10 +215,12 @@ class Character {
         this.atk = atk,
         this.def = def,
         this.critRate = (0.055 - 0.071) / (50 - 1) * (level - 1) + 0.071,
-        this.equip = equips
+        this.equips = equips
+        this.currentlyEquipped = []
     }
 
     attack(attacker, target, game, type){
+        let drainerArmor;
         playSound("hit-sound.mp3");
         if (attacker == "Player") {
             // The element that has the target class
@@ -194,18 +234,60 @@ class Character {
                 const randomEnemyIndex = Math.floor(Math.random() * game.enemies.length);
                 id = game.enemies[randomEnemyIndex].id;
         
-                // Assign the "target" class to the chosen enemy element
                 const randomEnemyEl = document.getElementById("enemy-" + id);
                 if (randomEnemyEl) {
                     randomEnemyEl.classList.add("target");
                 }
             }
         
-            // Find the enemy with the matching id and reduce its hit points
+            // Find the enemy with the matching id and reduce its hp
             const enemyIndex = game.enemies.findIndex(enemy => enemy.id === id);
             if (enemyIndex !== -1) {
-                // Calculate damage inflicted
-                const damage = Math.max(1, this.atk - game.enemies[enemyIndex].def);
+                let bonusAtk = 0;
+
+                // Apply any bonusses or flaws from equips
+                if(type === "rangedAtk" && this.equips){
+                    switch(this.currentlyEquipped){
+                        case "Death blow bow":
+                            const missChance = Math.random() * 100 >= 2; 
+                            if (missChance) {
+                                bonusAtk += 10;
+                            } else {
+                                return;
+                            }
+                            break;
+                        case "Clover bow":
+                            const critChance = Math.random() * 100 >= 5; 
+                            if (!critChance) {
+                                bonusAtk += Infinity;
+                            } else {
+                                bonusAtk -= 2;
+                            }
+                            break;
+                    }
+                } else if(type === "meleeAtk" && this.equips){
+                    switch(this.currentlyEquipped){
+                        case "Fog blade":
+                            bonusAtk += 2;
+                            const restrict = new StatusEffect("restrict", game.enemies[enemyIndex], this.game, 1);
+                            this.game.activeStatusses += restrict;
+                            break;
+                        case "Poison dagger":
+                            const poisonChance = Math.random() * 100 >= 10; 
+                            if (!poisonChance) {
+                                const poison = new StatusEffect("poison", game.enemies[enemyIndex], this.game, 5);
+                                this.game.activeStatusses += poison;
+                            }
+                            bonusAtk += 1;
+                            break;
+                        case "Drainer armor":
+                            drainerArmor = true;
+                            break;
+                    }
+                }
+
+                let damage = Math.max(1, (this.atk + bonusAtk) - game.enemies[enemyIndex].def);
+                game.enemies[enemyIndex].type;
 
                 // If you use a bow against a ranged foe, deal extra damage
                 const finalDamage = 
@@ -213,21 +295,39 @@ class Character {
                 
                 ? Math.ceil(damage * 1.5) : damage;
 
-                game.enemies[enemyIndex].hp -= finalDamage
+                game.enemies[enemyIndex].hp = game.enemies[enemyIndex].hp - finalDamage;
+
+                if (drainerArmor){
+                    this.hp = Math.min(this.hp + finalDamage / 5, this.maxHp);
+                }
 
                 game.enemies[enemyIndex].update();
             }
         } else {
-            // Attacker is not the player, subtract defender's defense from attacker's attack to calculate damage
+            // Initiate counter function
             const damage = Math.max(1, this.atk - target.def);
-            target.hp -= damage;
-            target.update();
+            struggle(damage, this, target, (result) => {
+                const damageIncrease = result[0];
+                const counterattackDamage = result[1];
+            
+                const finalDamage = Math.floor(damage + damageIncrease);
+                target.hp -= Math.max(finalDamage, 1);
+                target.update();
+            
+                if (counterattackDamage != 0) {
+                    console.log("Counter for " + counterattackDamage + "!");
+                    this.hp -= counterattackDamage;
+                    const id = this.id;
+                    const enemyIndex = game.enemies.findIndex(enemy => enemy.id === id);
+                    game.enemies[enemyIndex].update();
+                }
+            });
         }
     }
 }
 class Player extends Character {
-    constructor(name, level, hp, maxHp, atk, def, equips, extra){
-        super(name,level,hp,maxHp,atk,def,equips),
+    constructor(name, level, hp, maxHp, atk, def, equips,currentlyEquipped, extra){
+        super(name,level,hp,maxHp,atk,def,equips,currentlyEquipped),
         this.extra = extra
     }
     update(){
@@ -237,6 +337,12 @@ class Player extends Character {
         document.querySelector(".health").textContent=this.hp;
         document.querySelector(".attack").textContent=this.atk;
         document.querySelector(".defense").textContent=this.def;
+    }
+    equip(id){
+        this.currentlyEquipped += id
+    }
+    unequip(id){
+        this.currentlyEquipped -= id;
     }
 }
 class Enemy extends Character {
@@ -252,27 +358,61 @@ class Enemy extends Character {
         this.hp <= 0 ? hpBar.parentElement.parentElement.remove() : hpBar.querySelector("div").style.width = (this.hp / this.maxHp) * 100 + "%";
     }
 }
+class StatusEffect {
+    constructor(type, target, game, duration){
+        this.type = type,
+        this.target = target,
+        this.game = game,
+        this.duration = duration
+    }
+    tick(){
 
+    }
+}
 
 function generateRooms() {
     const roomTypes = ["Empty", "Loot", "Armory", "Enemy"];
     const roomType = "Enemy";
     // const roomType = roomTypes[Math.floor(Math.random() * 4)];
-    const roomType2 = roomTypes[Math.floor(Math.random() * 4)];
+    // const roomType2 = roomTypes[Math.floor(Math.random() * 4)];
+    const roomType2 = "Loot";
 
     return [roomType,roomType2];
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
     updateVolumeBars();
-    const game = new Game(0);
+    const game = new Game(1);
     const player = new Player("Player", 1, 10, 10, 4, 3,"");
     player.update();
     
     game.createRooms(generateRooms(), player);
 
     document.querySelector(".continueBtn").addEventListener("click",()=>{
-        game.createRooms(generateRooms(), player);
+        document.querySelector(".continueBtn").classList.add("hide");
+        const background = document.querySelector(".background");
+        playSound("menu-sound.mp3");
+        document.querySelectorAll(".room").forEach(room=>room.remove());
+        document.querySelectorAll(".combat .btn").forEach(btn=>btn.classList.add("disabled"));
+        // document.querySelector(".background").classList.add("walking-further");
+        // setTimeout(()=>{
+            const classes = ["enemy-room", "loot-room", "armor-room", "empty-room"];            
+            classes.forEach(className=> {
+                if (background.classList.contains(className)) {
+                    background.classList.remove(className);
+                }
+            });
+            
+        // },2000)
+        // setTimeout(() => {
+            game.floor += 1;
+            document.getElementById("floorIndex").textContent = game.floor;
+            game.createRooms(generateRooms(), player);
+            // background.classList.remove("walking-further");
+        // }, 3000);
+        // setTimeout(() => {
+            background.classList.remove("inside-room");
+        // }, 7000);
     });
 
     document.querySelector(".btn.attack").addEventListener("click",()=>{
@@ -283,30 +423,95 @@ document.addEventListener('DOMContentLoaded',()=>{
         attackPopup.style.left = attackBtnRect.right + "px";
         attackPopup.classList.add("show");
     });
+    
+    const melee = document.querySelector(".attackPopUp .option-melee");
+    const ranged = document.querySelector(".attackPopUp .option-ranged");
+    melee.addEventListener("click",()=>{
+        enemySelection(melee.id,player,game);
+    });
+    ranged.addEventListener("click",()=>{
+        enemySelection(ranged.id,player,game);
+    });
 
     document.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowRight") {
-          if (game.currentRoom === "choice" && !document.body.classList.contains("tutorial-open")) {
-            document.querySelector("#rooms .right").click();
-          } else {
-            const handOverlay = document.querySelector(".hand-overlay img");
-            if (handOverlay) {
-                handOverlay.style.transform = `translate(0px, 100vh)`;
-                setTimeout(() => {
-                    playSound("page-turn.mp3");
-                    handOverlay.style.transform = `translate(0px, 0vh)`;    
-                    handOverlay.src="public/img/tutorial-pages/tutorial-page-2.png";
-                    document.querySelector(".nextPage").style.display="none";
-                }, 2000);
-            }
-          }
-        } else if (event.key === "ArrowLeft") {
-          if (game.currentRoom === "choice") {
-            document.querySelector("#rooms .left").click();
-          }
+        switch(event.key){
+            case "ArrowRight":
+                if (game.currentRoom === "choice" && !document.body.classList.contains("tutorial-open")) {
+                    document.querySelector("#rooms .right").click();
+                } else {
+                    const handOverlay = document.querySelector(".hand-overlay img");
+                    if (handOverlay) {
+                        handOverlay.style.transform = `translate(0px, 100vh)`;
+                        setTimeout(() => {
+                            playSound("page-turn.mp3");
+                            handOverlay.style.transform = `translate(0px, 0vh)`;    
+                            handOverlay.src="public/img/tutorial-pages/tutorial-page-2.png";
+                            document.querySelector(".nextPage").style.display="none";
+                        }, 2000);
+                    }
+                }
+                break;
+            case "ArrowLeft":
+                if (game.currentRoom === "choice") {
+                    document.querySelector("#rooms .left").click();
+                }
+                break;
+            case "b":
+                document.querySelector("#bestiary.popUp.show") ? document.querySelector("#bestiary.popUp.show").classList.remove("show") : createEntries();
+                break;
+            case "i":
+                // do thing
+                break;
         }
       });
       setTimeout(()=>{
           getHistory();
       }, 4000)
 });
+
+const struggle = (damage, enemy, player, callback) => {
+    let requiredPresses = Math.floor(Math.random() * 20) + 10;
+    let finalDamage;
+    let counterattackDamage;
+    console.log("Quick! Press!");
+    const keyPressHandler = (event) => {
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            const expectedDirection = requiredPresses % 2 === 0 ? "ArrowLeft" : "ArrowRight";
+            if (event.key === expectedDirection) {
+                requiredPresses--;
+                if (requiredPresses === 0) {
+                    console.log("Broke through 2");
+                }
+            }
+        }
+    };
+    document.addEventListener("keydown", keyPressHandler);
+    setTimeout(() => {
+        document.removeEventListener("keydown", keyPressHandler);
+
+        const damageReduction = calculateDamageReduction(damage, requiredPresses);
+        if (requiredPresses <= 0) {
+            counterattackDamage = calculateCounterattackDamage(enemy, player);
+            console.log(damageReduction);
+            finalDamage = Math.floor(Math.max(damage - Math.max(damageReduction, 0), 1));
+        } else {
+            // const damageFormula = Math.min(Math.floor(damageReduction - ((damage + player.hp)), player.hp))
+            const damageFormula = Math.floor(damageReduction - ((damageReduction / 100) * 70))
+            console.log(damageFormula);
+            finalDamage = damageFormula;
+            counterattackDamage = 0;
+        }
+        console.log([finalDamage, counterattackDamage]);
+        callback([finalDamage, counterattackDamage]);
+    }, 3000);
+}
+
+
+const calculateDamageReduction = (damage, presses) => {
+    return damage * (presses - 0.5);
+}
+const calculateCounterattackDamage = (enemy, player) => {
+    const levelDifference = enemy.level - player.level;
+    const counterattackDamage = Math.max(1, Math.max(0, levelDifference * 2));
+    return counterattackDamage;
+}

@@ -13,7 +13,9 @@ body {
     font-family: joystix;
     src: url(../fonts/joystix\ monospace.otf);
 }
-
+img {
+    -webkit-user-drag: none;
+}
 ::-webkit-scrollbar {
     width: 5px;
 }
@@ -208,10 +210,10 @@ main.move {
     position: absolute;
     z-index: 100;
     opacity: 0.8;
-    transform: rotate(303deg);
-    top: 85px;
+    transform: rotate(341deg);
+    top: 45px;
     pointer-events: none;
-    right: 0px;
+    right: 20px;
 }
 .broken-crack img {
     width: 300px;
@@ -221,6 +223,28 @@ main.move {
     width: 50%;
     height: 50%;
     padding: 10px;
+}
+.loot {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding-right: 10px;
+    display: flex;
+    font-family: joystix;
+    color: #fff;
+}
+.loot h1 {
+    margin: 0 3px;
+}
+.loot-value{
+    display: flex;
+}
+.loot img {
+    margin-right: 10px;
+    width: 60px;
+}
+.lowered {
+    transform: translateY(10px);
 }
 .bottom-left {
     display: flex;
@@ -427,6 +451,10 @@ body {
     opacity: 0.8;
     animation: gain-sight 5s forwards ease-in-out;
 }
+.background.walking-further{
+    opacity: 1;
+    animation: lose-sight 2s forwards ease-in-out;
+}
 .loot-room{
     background-image: url(../img/backGrounds/lootroom.jpg);
 }
@@ -446,6 +474,14 @@ body {
     }
     to{
         opacity: 1;
+    }
+}
+@keyframes lose-sight {
+    from{
+        opacity: 1;
+    }
+    to{
+        opacity: 0;
     }
 }
 
@@ -850,7 +886,7 @@ input[type="radio"].toggle:checked + label:after {
     color: #ffffff;
     border-radius: 5px;
     font-family: joystix;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 100;
     text-transform: uppercase;
 }
@@ -859,7 +895,7 @@ input[type="radio"].toggle:checked + label:after {
     display: none;
     left: 0;
     bottom: 0;
-    height: 20vh;
+    height: 25vh;
     width: 100%;
     padding: 20px;
     z-index: 99;

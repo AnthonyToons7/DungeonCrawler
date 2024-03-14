@@ -12,8 +12,8 @@ async function createEntries(){
     const maxEntries = 5;
     document.querySelectorAll(".entries div").forEach(el=>{el.remove()});
     if(unlockedEntries.length != 0){
+        const enemy = await getEntries();
         for (let i=0;i<maxEntries;i++) {
-            const enemy = await getEntries();
             const entryContainer = document.createElement("div");
             entryContainer.classList.add("entry");
             if(i==0)entryContainer.classList.add("active");
@@ -45,6 +45,22 @@ async function createEntries(){
             });
             document.querySelector(".entries").appendChild(entryContainer);
         }
+        document.querySelector(".entry-info").innerHTML='';
+        const imageContainer = document.createElement("div");
+
+        const information = document.createElement("p");
+
+        const image = document.createElement("img");
+        imageContainer.classList.add("entry-image");
+        image.src=`public/img/bestiary/${document.querySelector(".entry.active").textContent}.png`;
+        imageContainer.appendChild(image);
+        
+        information.textContent= 
+        enemy[document.querySelector(".entry.active").textContent] ? 
+        enemy[document.querySelector(".entry.active").textContent] :
+         "???";
+
+        document.querySelector(".entry-info").append(imageContainer,information);
     } else {
         for (let i=0;i<maxEntries;i++) {
             const entryContainer = document.createElement("div");

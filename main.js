@@ -10,7 +10,8 @@ const createWindow = () => {
         // fullscreen: true,
         webPreferences: {
             // devTools: false
-        }
+        },
+        icon: 'public/img/bestiary/Snake.png',
     });
     
     win.loadFile('index.html');
