@@ -109,3 +109,65 @@ function enemySelection(type, player, game) {
     enemy.addEventListener("click", handleClick);
   });
 }
+
+const struggle = (damage, enemy, player, callback) => {
+  let requiredPresses = Math.floor((Math.random() * 0.3 * damage) + 10);
+  let finalDamage;
+  let counterattackDamage;
+  console.log("Quick! Press!");
+
+  const container = document.createElement("div");
+  const txt = document.createElement("h2");
+  const btnContainer = document.createElement("div");
+  const btn_left = document.createElement("img");
+  const btn_right = document.createElement("img");
+
+  btn_left.src = "public/img/icons/btn-left.svg";
+  btn_right.src = "public/img/icons/btn-right.svg";
+  txt.textContent = "Press in sequence!";
+
+  btnContainer.append(btn_left, btn_right);
+  container.append(txt, btnContainer);
+  document.getElementById("quickTimeEvents").appendChild(container);
+
+  const keyPressHandler = (event) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          const expectedDirection = requiredPresses % 2 === 0 ? "ArrowLeft" : "ArrowRight";
+          if (event.key === expectedDirection) {
+              requiredPresses--;
+              if (requiredPresses === 0) {
+                  console.log("Broke through 2");
+              }
+          }
+      }
+  };
+  document.addEventListener("keydown", keyPressHandler);
+  setTimeout(() => {
+      document.removeEventListener("keydown", keyPressHandler);
+
+      const damageReduction = calculateDamageReduction(damage, requiredPresses);
+      const damageReductionFactor = (damageReduction / requiredPresses);
+
+      if (requiredPresses === 0) {
+          finalDamage = Math.floor(damage - (damage * 0.3));
+      } else {
+          finalDamage = Math.floor(damage - (damageReductionFactor * 0.1 * damage));
+      }
+
+      counterattackDamage = calculateCounterattackDamage(enemy, player);
+
+      console.log([finalDamage, counterattackDamage]);
+      callback([finalDamage, counterattackDamage]);
+      // container.remove();
+  }, 3000);
+}
+
+const calculateDamageReduction = (damage, presses) => {
+  return Math.floor(damage * 0.7) / presses;
+}
+
+const calculateCounterattackDamage = (enemy, player) => {
+  const levelDifference = enemy.level - player.level;
+  const counterattackDamage = Math.max(1, Math.max(0, levelDifference * 2));
+  return counterattackDamage;
+}

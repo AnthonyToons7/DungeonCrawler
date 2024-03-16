@@ -326,7 +326,7 @@ class Character {
     }
 }
 class Player extends Character {
-    constructor(name, level, hp, maxHp, atk, def, equips,currentlyEquipped, extra){
+    constructor(name, level, hp, maxHp, atk, def, equips, exp, currentlyEquipped, extra){
         super(name,level,hp,maxHp,atk,def,equips,currentlyEquipped),
         this.extra = extra
     }
@@ -384,6 +384,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     updateVolumeBars();
     const game = new Game(1);
     const player = new Player("Player", 1, 10, 10, 4, 3,"");
+    const inventory = new Inventory();
     player.update();
     
     game.createRooms(generateRooms(), player);
@@ -438,7 +439,7 @@ document.addEventListener('DOMContentLoaded',()=>{
             case "ArrowRight":
                 if (game.currentRoom === "choice" && !document.body.classList.contains("tutorial-open")) {
                     document.querySelector("#rooms .right").click();
-                } else {
+                } else if (document.body.classList.contains("tutorial-open")) {
                     const handOverlay = document.querySelector(".hand-overlay img");
                     if (handOverlay) {
                         handOverlay.style.transform = `translate(0px, 100vh)`;
@@ -460,72 +461,23 @@ document.addEventListener('DOMContentLoaded',()=>{
                 document.querySelector("#bestiary.popUp.show") ? document.querySelector("#bestiary.popUp.show").classList.remove("show") : createEntries();
                 break;
             case "i":
-                // do thing
+                inventory.createInventory();
+                document.getElementById("inventory").classList.toggle("show");
                 break;
         }
       });
-      setTimeout(()=>{
-          getHistory();
-      }, 4000)
+
+    // Creating items
+    const sword = new Item('Sword', 'sword.png', 'weapons');
+    const shield = new Item('Shield', 'shield.png', 'armor');
+    const potion = new Item('Potion', 'potion.png', 'general');
+
+    // Adding items to inventory
+    inventory.weaponryItems.push(sword);
+    inventory.armorItems.push(shield);
+    inventory.generalItems.push(potion);
+
+    setTimeout(()=>{
+        getHistory();
+    }, 4000)
 });
-
-const struggle = (damage, enemy, player, callback) => {
-    let requiredPresses = Math.floor(Math.random() * 20) + 10;
-    let finalDamage;
-    let counterattackDamage;
-    console.log("Quick! Press!");
-
-    const container = document.createElement("div");
-    const txt = document.createElement("h2");
-    const btnContainer = document.createElement("div");
-    const btn_left = document.createElement("img");
-    const btn_right = document.createElement("img");
-
-    txt.textContent = "Press in sequence!";
-
-    btnContainer.append(btn_left,btn_right);
-    container.append(txt,btnContainer);
-    document.getElementById("quickTimeEvents").appendChild(container);
-
-    const keyPressHandler = (event) => {
-        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-            const expectedDirection = requiredPresses % 2 === 0 ? "ArrowLeft" : "ArrowRight";
-            if (event.key === expectedDirection) {
-                requiredPresses--;
-                if (requiredPresses === 0) {
-                    console.log("Broke through 2");
-                }
-            }
-        }
-    };
-    document.addEventListener("keydown", keyPressHandler);
-    setTimeout(() => {
-        document.removeEventListener("keydown", keyPressHandler);
-
-        const damageReduction = calculateDamageReduction(damage, requiredPresses);
-        if (requiredPresses <= 0) {
-            counterattackDamage = calculateCounterattackDamage(enemy, player);
-            console.log(damageReduction);
-            finalDamage = Math.floor(Math.max(damage - Math.max(damageReduction, 0), 1));
-        } else {
-            // const damageFormula = Math.min(Math.floor(damageReduction - ((damage + player.hp)), player.hp))
-            const damageFormula = Math.floor(damageReduction - ((damageReduction / 100) * 70))
-            console.log(damageFormula);
-            finalDamage = damageFormula;
-            counterattackDamage = 0;
-        }
-        console.log([finalDamage, counterattackDamage]);
-        callback([finalDamage, counterattackDamage]);
-        container.remove();
-    }, 3000);
-}
-
-
-const calculateDamageReduction = (damage, presses) => {
-    return damage * (presses - 0.5);
-}
-const calculateCounterattackDamage = (enemy, player) => {
-    const levelDifference = enemy.level - player.level;
-    const counterattackDamage = Math.max(1, Math.max(0, levelDifference * 2));
-    return counterattackDamage;
-}
