@@ -373,9 +373,9 @@ class StatusEffect {
 function generateRooms() {
     const roomTypes = ["Empty", "Loot", "Armory", "Enemy"];
     const roomType = "Enemy";
+    // const roomType2 = "Loot";
     // const roomType = roomTypes[Math.floor(Math.random() * 4)];
-    // const roomType2 = roomTypes[Math.floor(Math.random() * 4)];
-    const roomType2 = "Loot";
+    const roomType2 = roomTypes[Math.floor(Math.random() * 4)];
 
     return [roomType,roomType2];
 }
@@ -434,6 +434,13 @@ document.addEventListener('DOMContentLoaded',()=>{
         enemySelection(ranged.id,player,game);
     });
 
+        
+    document.querySelector(".btn.inventory").addEventListener("click", ()=>{
+        inventory.createInventory();
+        document.getElementById("inventory").classList.toggle("show");
+    });
+    document.querySelector("#inventory .cross").addEventListener("click", ()=>{document.getElementById("inventory").classList.toggle("show");});
+
     document.addEventListener("keydown", (event) => {
         switch(event.key){
             case "ArrowRight":
@@ -472,7 +479,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const shield = new Item('Shield', 'shield.png', 'armor');
     const potion = new Item('Potion', 'potion.png', 'general');
 
-    // Adding items to inventory
+    // Adding items to inventoryiii
     inventory.weaponryItems.push(sword);
     inventory.armorItems.push(shield);
     inventory.generalItems.push(potion);

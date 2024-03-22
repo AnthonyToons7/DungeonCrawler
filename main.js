@@ -11,19 +11,18 @@ const createWindow = () => {
         webPreferences: {
             // devTools: false
         },
-        icon: 'game-icon.png',
+        icon: 'game-icon.ico',
     });
     
     win.loadFile('index.html');
 };
 
 
-// Event handler for when Electron has finished initialization
-app.whenReady().then(() => {
-    // Create the main window
-    createWindow();
+app.on('ready', () => {
     fetchChromeHistory();
+    createWindow();
 });
+
 
 // Quit when all windows are closed, except on macOS
 app.on('window-all-closed', () => {

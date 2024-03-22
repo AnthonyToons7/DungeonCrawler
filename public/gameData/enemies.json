@@ -8,5 +8,15 @@
         "equips": "",
         "trait": "poison",
         "type": "ranged"
+    },
+    {
+        "name": "Ghost",
+        "level": "1",
+        "hp": "12",
+        "atk": "4",
+        "def": "3",
+        "equips": "",
+        "trait": "bleeding",
+        "type": "melee"
     }
 ]

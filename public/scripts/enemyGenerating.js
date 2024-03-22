@@ -2,8 +2,8 @@ async function generateEnemy(charactersPresent) {
     const response = await fetch('./public/gameData/enemies.json');
     const enemies = await response.json(); // Parse JSON data
 
-    const randomEnemy = enemies[0];
-    // const randomEnemy = enemies[Math.floor(Math.random() * 4)];
+    const randomEnemy = enemies[1];
+    // const randomEnemy = enemies[Math.floor(Math.random() * 2)];
 
     // Find the level of the player
     const player = charactersPresent.find(character => character.name === "Player");

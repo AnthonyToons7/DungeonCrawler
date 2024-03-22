@@ -1,18 +1,42 @@
 {
-  "name": "game",
+  "name": "shadow-labyrinth",
   "version": "1.0.0",
   "description": "a game",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "package-win": "electron-packager . ShadowLabyrinth --overwrite --asar=true --platform=win32 --arch=x64 --icon=game-icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.AHAHAHHAHA=CE --version-string.ProductName=\"ShadowLabyrinth\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^29.0.0"
+    "electron": "^29.1.5",
+    "electron-builder": "^24.13.3",
+    "electron-packager": "^17.1.2",
+    "electron-rebuild": "^3.2.9"
   },
   "dependencies": {
-    "sqlite3": "^5.1.7",
+    "sqlite3": "^5.1.6",
     "uniq": "^1.0.1"
+  },
+  "build": {
+    "appId": "com.anthonytoons.shadow-labyrinth",
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.auxWall.services"
+    },
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "electronVersion": "29.1.4"
   }
 }

@@ -1,6 +1,6 @@
 [
     {
-        "Void":"public/img/spriteSheets/Void-sheet.png"
+        "Ghost":"public/img/spriteSheets/Ghost-sheet.png"
     },
     {
         "Snake":"public/img/spriteSheets/Snake-sheet.png"

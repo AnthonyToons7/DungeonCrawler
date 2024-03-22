@@ -30,8 +30,8 @@ img {
 }
 
 .gatekeeper-overlay {
-    display: none;
-    /* display: flex; */
+    /* display: none; */
+    display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
@@ -548,7 +548,8 @@ a, div, section, span, p, .btn{
     transition: all .2s;
 }
 #settingsPopup,
-#bestiary{
+#bestiary,
+#inventory{
     transform: translate(-50%,-50%) scale(0);
 }
 #bestiary {
@@ -569,7 +570,8 @@ a, div, section, span, p, .btn{
     display: flex;
 }
 #settingsPopup.show,
-#bestiary.show{
+#bestiary.show,
+#inventory.show{
     transform: translate(-50%,-50%) scale(1);
 }
 .quit-btn {
@@ -579,7 +581,8 @@ a, div, section, span, p, .btn{
 }
 #settingsPopup.show,
 #controlsPopup.show,
-#bestiary.show {
+#bestiary.show,
+#inventory.show {
     opacity: 1;
     pointer-events: all;
     color: #fff;
@@ -936,14 +939,24 @@ input[type="radio"].toggle:checked + label:after {
     font-family: joystix;
 }
 #inventory {
-    opacity: 1;
-    pointer-events: all;
-    position: absolute;
-    top: 50%;
-    left: 50%;
     z-index: 998;
     width: 850px;
+    background-color: #1c106cf2;
+    overflow: scroll;
+}
+.inventory-item {
+    height: 150px;
+    width: 150px;
     display: flex;
     justify-content: center;
-    background-color: #1c106cf2;
+    border: 2px solid #fff;
+    border-radius: 3px;
+}
+#inventory > .bottom > div{
+    border-bottom: 2px solid #fff;
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+#inventory > .bottom > div > h2 {
+    margin-bottom: 20px;
 }

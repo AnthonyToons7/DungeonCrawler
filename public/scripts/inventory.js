@@ -4,7 +4,7 @@ class Item {
         this.imgSrc = imgSrc;
         this.category = category;
     }
-}
+};
 
 class Inventory {
     constructor() {
@@ -20,12 +20,13 @@ class Inventory {
     }
 
     createInventory() {
+        this.remove();
         this.inventoryElement = document.createElement('div');
         this.inventoryElement.id = 'inventory';
         this.inventoryElement.classList.add('popUp');
         this.inventoryElement.style.display = 'none';
 
-        const bottomDiv = document.querySelector('#inventory.bottom');
+        const bottomDiv = document.querySelector('#inventory .bottom');
 
         for (let i = 0; i < this.categories.length; i++) {
             const name = this.categories[i];
@@ -39,8 +40,9 @@ class Inventory {
                 const itemImg = document.createElement("img");
                 const itemName = document.createElement("p");
 
+                itemContainer.classList.add("inventory-item");
                 itemName.textContent = item.name;
-                itemImg.src = item.imgSrc;
+                // itemImg.src = item.imgSrc;
 
                 itemContainer.append(itemImg, itemName);
                 list.appendChild(itemContainer);
@@ -53,5 +55,9 @@ class Inventory {
             container.append(title, list);
             bottomDiv.appendChild(container);
         }
+    }
+    remove(){
+        const bottomDiv = document.querySelector('#inventory .bottom');
+        bottomDiv.innerHTML = '';
     }
 }

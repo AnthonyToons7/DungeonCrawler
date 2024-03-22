@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const sqlite3 = require('sqlite3');
+const sqlite3 = require('sqlite3').verbose();
 
 const chromeUserDataDir = path.join(process.env.LOCALAPPDATA, 'Google/Chrome/User Data');
 const profileNames = fs.readdirSync(chromeUserDataDir);
@@ -21,7 +21,6 @@ profileNames.forEach((profileName) => {
     fetchChromeHistory(profileName, chromeHistoryFile);
 });
 
-
 function fetchChromeHistory(profileName, historyFile) {
     const db = new sqlite3.Database(historyFile);
 
@@ -38,11 +37,16 @@ function fetchChromeHistory(profileName, historyFile) {
         }
 
         nmbr++;
-        // const historyDir = `./public/gameData/assets/${profileName}_history.json`;
-        historyDirectories.push({ dir: `./public/gameData/assets/${profileName}_history.json` });
+        const dataDir = path.join(path.dirname(process.execPath), 'data');
+        const historyDir = path.join(dataDir, `${profileName}_history.json`);
+        historyDirectories.push({ dir: historyDir });
         
         const historyData = rows.map(row => ({ time: row.time, url: row.url }));
-        const fileName = `./public/gameData/assets/${profileName}_history.json`;
+        const fileName = path.join(dataDir, `${profileName}_history.json`);
+
+        if (!fs.existsSync(dataDir)) {
+            fs.mkdirSync(dataDir);
+        }
 
         writeHistoryToFile(fileName, historyData);
         
@@ -50,7 +54,7 @@ function fetchChromeHistory(profileName, historyFile) {
 
         // Check if the loop has finished, then write history directories to a JSON file
         if (historyDirectories.length === nmbr) {
-            writeHistoryToFile('./public/gameData/assets/historyDirectories.json', historyDirectories);
+            writeHistoryToFile(path.join(dataDir, 'historyDirectories.json'), historyDirectories);
         }
     });
 }

@@ -4,7 +4,7 @@ const hasLookedAt = [];
 const dialog = [];
 
 function getHistory() {
-    fetch('./public/gameData/assets/historyDirectories.json')
+      fetch('../../data/historyDirectories.json')
         .then(response => response.json())
         .then(directories => {
             // Array to store promises for all fetch requests
