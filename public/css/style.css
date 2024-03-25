@@ -960,3 +960,8 @@ input[type="radio"].toggle:checked + label:after {
 #inventory > .bottom > div > h2 {
     margin-bottom: 20px;
 }
+
+
+#melee {
+    transform: scale(0.9) translateY(-90px);
+}

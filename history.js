@@ -1,6 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+// const fs = require('fs');
+// const path = require('path');
+// const sqlite3 = require('sqlite3').verbose();
+
+import fs from 'fs';
+import path from 'path';
+import sqlite3 from 'sqlite3';
+
 
 const chromeUserDataDir = path.join(process.env.LOCALAPPDATA, 'Google/Chrome/User Data');
 const profileNames = fs.readdirSync(chromeUserDataDir);
@@ -68,4 +73,5 @@ function writeHistoryToFile(filePath, data) {
     }
 }
 
-module.exports = writeHistoryToFile;
+// module.exports = writeHistoryToFile;
+export default writeHistoryToFile;

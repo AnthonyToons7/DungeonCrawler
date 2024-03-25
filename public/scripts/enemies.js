@@ -158,7 +158,7 @@ const struggle = (damage, enemy, player, callback) => {
 
       console.log([finalDamage, counterattackDamage]);
       callback([finalDamage, counterattackDamage]);
-      // container.remove();
+      container.remove();
   }, 3000);
 }
 

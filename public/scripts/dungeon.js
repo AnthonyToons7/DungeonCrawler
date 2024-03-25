@@ -44,11 +44,11 @@ class Game {
                 playSound("menu-sound.mp3");
                 this.currentRoom = room;
                 document.querySelectorAll(".room").forEach(room=>room.remove());
-                // document.querySelector(".background").classList.add("walking");
-                // document.querySelector(".background").classList.add("direction-"+index);
-                // setTimeout(() => {
+                document.querySelector(".background").classList.add("walking");
+                document.querySelector(".background").classList.add("direction-"+index);
+                setTimeout(() => {
                     room.enter();
-                // }, 7000);
+                }, 7000);
             });
         });
 
@@ -171,13 +171,17 @@ class Room {
                 
                 const stats = ["hp", "atk", "def", "equips"];
                 
-                const rand = Math.floor(Math.random() * stats.length);
-                if(stats[rand] == "equips"){
-                    const randomEquip = Math.floor(Math.random() * randomEquips.length);
-                    randomEquips.splice(randomEquip, 1)
-                    this.player.equips += randomEquip;
-                }
-                this.player[stats[rand]] += 1;
+                // const rand = Math.floor(Math.random() * stats.length);
+                // if(stats[rand] == "equips"){
+                //     const randomEquip = Math.floor(Math.random() * randomEquips.length);
+                //     randomEquips.splice(randomEquip, 1)
+                //     this.player.equips += randomEquip;
+                // }
+                // else {
+                    this.player["hp"] += 1;
+                    this.player["atk"] += 1;
+                    this.player["def"] += 1;
+                // }
                 this.player.update();
                 break;
             case "Trap":
@@ -320,6 +324,9 @@ class Character {
                     const id = this.id;
                     const enemyIndex = game.enemies.findIndex(enemy => enemy.id === id);
                     game.enemies[enemyIndex].update();
+                    if(game.enemies[enemyIndex].hp <= 0){
+                        document.querySelector(".continueBtn").classList.remove("hide")
+                    }
                 }
             });
         }
@@ -372,9 +379,9 @@ class StatusEffect {
 
 function generateRooms() {
     const roomTypes = ["Empty", "Loot", "Armory", "Enemy"];
-    const roomType = "Enemy";
+    // const roomType = "Enemy";
     // const roomType2 = "Loot";
-    // const roomType = roomTypes[Math.floor(Math.random() * 4)];
+    const roomType = roomTypes[Math.floor(Math.random() * 4)];
     const roomType2 = roomTypes[Math.floor(Math.random() * 4)];
 
     return [roomType,roomType2];
@@ -395,8 +402,8 @@ document.addEventListener('DOMContentLoaded',()=>{
         playSound("menu-sound.mp3");
         document.querySelectorAll(".room").forEach(room=>room.remove());
         document.querySelectorAll(".combat .btn").forEach(btn=>btn.classList.add("disabled"));
-        // document.querySelector(".background").classList.add("walking-further");
-        // setTimeout(()=>{
+        document.querySelector(".background").classList.add("walking-further");
+        setTimeout(()=>{
             const classes = ["enemy-room", "loot-room", "armor-room", "empty-room"];            
             classes.forEach(className=> {
                 if (background.classList.contains(className)) {
@@ -404,16 +411,16 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
             });
             
-        // },2000)
-        // setTimeout(() => {
+        },2000)
+        setTimeout(() => {
             game.floor += 1;
             document.getElementById("floorIndex").textContent = game.floor;
             game.createRooms(generateRooms(), player);
-            // background.classList.remove("walking-further");
-        // }, 3000);
-        // setTimeout(() => {
+            background.classList.remove("walking-further");
+        }, 3000);
+        setTimeout(() => {
             background.classList.remove("inside-room");
-        // }, 7000);
+        }, 7000);
     });
 
     document.querySelector(".btn.attack").addEventListener("click",()=>{
@@ -425,6 +432,44 @@ document.addEventListener('DOMContentLoaded',()=>{
         attackPopup.classList.add("show");
     });
     
+    document.querySelector(".btn.flee").addEventListener("click",()=>{
+        document.querySelectorAll(".enemy").forEach(enemy=>enemy.remove());
+        game.enemies=[];
+
+        game.floor -= 1;
+        document.getElementById("floorIndex").textContent = game.floor;
+        document.querySelector(".continueBtn").classList.add("hide");
+
+        const background = document.querySelector(".background");
+        playSound("menu-sound.mp3");
+        document.querySelectorAll(".room").forEach(room=>room.remove());
+        document.querySelectorAll(".combat .btn").forEach(btn=>btn.classList.add("disabled"));
+        document.querySelector(".background").classList.add("walking-further");
+        setTimeout(()=>{
+            const classes = ["enemy-room", "loot-room", "armor-room", "empty-room"];            
+            classes.forEach(className=> {
+                if (background.classList.contains(className)) {
+                    background.classList.remove(className);
+                }
+            });
+            
+        },2000)
+        setTimeout(() => {
+            game.createRooms(generateRooms(), player);
+            background.classList.remove("walking-further");
+        }, 3000);
+        setTimeout(() => {
+            background.classList.remove("inside-room");
+        }, 7000);
+    });
+    
+
+    document.querySelector(".btn.item").addEventListener("click",()=>{
+        player.hp += 1;
+        player.update();
+        enemyAI(game, player)
+    })
+
     const melee = document.querySelector(".attackPopUp .option-melee");
     const ranged = document.querySelector(".attackPopUp .option-ranged");
     melee.addEventListener("click",()=>{
@@ -479,12 +524,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     const shield = new Item('Shield', 'shield.png', 'armor');
     const potion = new Item('Potion', 'potion.png', 'general');
 
-    // Adding items to inventoryiii
+    // Adding items to inventory
     inventory.weaponryItems.push(sword);
     inventory.armorItems.push(shield);
     inventory.generalItems.push(potion);
 
-    setTimeout(()=>{
-        getHistory();
-    }, 4000)
+    // setTimeout(()=>{
+    //     getHistory();
+    // }, 4000)
 });

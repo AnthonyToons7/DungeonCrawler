@@ -1,6 +1,5 @@
-const { app, BrowserWindow } = require('electron');
-const fetchChromeHistory = require('./history.js');
-
+import { app, BrowserWindow } from 'electron';
+import fetchChromeHistory from './history.js';
 
 // Function to create the main window
 const createWindow = () => {
@@ -16,7 +15,6 @@ const createWindow = () => {
     
     win.loadFile('index.html');
 };
-
 
 app.on('ready', () => {
     fetchChromeHistory();

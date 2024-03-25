@@ -2,3 +2,5 @@
 /dist
 /public/gameData/assets/*
 /release-builds
+/shut.js
+/test.js

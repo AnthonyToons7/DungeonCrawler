@@ -17,6 +17,7 @@
     "electron-rebuild": "^3.2.9"
   },
   "dependencies": {
+    "child_process": "^1.0.2",
     "sqlite3": "^5.1.6",
     "uniq": "^1.0.1"
   },
@@ -38,5 +39,6 @@
       "buildResources": "build"
     },
     "electronVersion": "29.1.4"
-  }
+  },
+  "type": "module"
 }
